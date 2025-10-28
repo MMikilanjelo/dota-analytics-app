@@ -1,0 +1,111 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+interface Error {
+  message: String!
+}
+
+"The node interface is implemented by entities that have a global unique identifier."
+interface Node {
+  id: ID!
+}
+
+type CreateUserPayload {
+  user: User
+  errors: [CreateUserError!]
+}
+
+type DomainError {
+  code: String!
+  message: String!
+}
+
+type InvalidCredentialsError implements Error {
+  code: String!
+  message: String!
+}
+
+type LoginUserPayload {
+  user: User
+  accessToken: String
+  refreshToken: String
+  errors: [LoginUserError!]
+}
+
+type Mutation {
+  createUser(input: CreateUserInput!): CreateUserPayload! @cost(weight: "10")
+  loginUser(input: LoginUserInput!): LoginUserPayload! @cost(weight: "10")
+  refreshAccessToken(input: RefreshAccessTokenInput!): RefreshAccessTokenPayload! @cost(weight: "10")
+}
+
+type NotUniqueEmailError implements Error {
+  code: String!
+  message: String!
+}
+
+type Query {
+  "Fetches an object given its ID."
+  node("ID of the object." id: ID!): Node @cost(weight: "10")
+  "Lookup nodes by a list of IDs."
+  nodes("The list of node IDs." ids: [ID!]!): [Node]! @cost(weight: "10")
+  userById(id: ID!): User @cost(weight: "10")
+}
+
+type RefreshAccessTokenPayload {
+  accessToken: String
+  refreshToken: String
+  errors: [RefreshAccessTokenError!]
+}
+
+type RefreshTokenExpiredError implements Error {
+  code: String!
+  message: String!
+}
+
+type RefreshTokenNotFoundError implements Error {
+  code: String!
+  message: String!
+}
+
+type User implements Node {
+  id: ID!
+  email: String!
+}
+
+type UserNotFoundError implements Error {
+  code: String!
+  message: String!
+}
+
+type ValidationError implements Error {
+  errors: [DomainError!]!
+  code: String!
+  message: String!
+}
+
+union CreateUserError = ValidationError | NotUniqueEmailError
+
+union LoginUserError = UserNotFoundError | InvalidCredentialsError | ValidationError
+
+union RefreshAccessTokenError = RefreshTokenExpiredError | RefreshTokenNotFoundError
+
+input CreateUserInput {
+  email: String!
+  password: String!
+}
+
+input LoginUserInput {
+  email: String!
+  password: String!
+}
+
+input RefreshAccessTokenInput {
+  refreshToken: String!
+}
+
+"The purpose of the `cost` directive is to define a `weight` for GraphQL types, fields, and arguments. Static analysis can use these weights when calculating the overall cost of a query or response."
+directive @cost("The `weight` argument defines what value to add to the overall cost for every appearance, or possible appearance, of a type, field, argument, etc." weight: String!) on SCALAR | OBJECT | FIELD_DEFINITION | ARGUMENT_DEFINITION | ENUM | INPUT_FIELD_DEFINITION
+
+scalar Id
