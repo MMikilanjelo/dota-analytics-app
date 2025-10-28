@@ -1,7 +1,8 @@
-﻿using Common.Contracts;
-using Common.Outbox;
-using Modules.ExternalAccounts.Domain;
+﻿using Modules.ExternalAccounts.Domain;
 using Newtonsoft.Json;
+using SharedKernel;
+using SharedKernel.Abstractions;
+using SharedKernel.Contracts.Messaging;
 
 namespace Modules.ExternalAccounts.Infrastructure.Data.Repositories;
 
@@ -17,7 +18,7 @@ public class ExternalAccountsUnitOfWork(ExternalAccountsDbContext dbContext) : I
     private void ConvertDomainEventsToOutboxMessages()
     {
         var messages = dbContext.ChangeTracker
-            .Entries<AggreggateRoot>()
+            .Entries<AggregateRoot>()
             .Select(e => e.Entity)
             .SelectMany(e =>
                 {

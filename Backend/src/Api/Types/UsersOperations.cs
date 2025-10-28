@@ -1,11 +1,12 @@
 ﻿using Api.Types.Inputs;
-using Common;
-using Common.Contracts.Messaging;
+using SharedKernel;
+using SharedKernel.Contracts.Messaging;
 using HotChocolate.Execution.Processing;
 using Modules.Users.Application.Common.Models;
 using Modules.Users.Application.UseCases.Commands;
 using Modules.Users.Application.UseCases.Queries;
 using Modules.Users.Domain.Aggregates.UserAggregate;
+using SharedKernel.Errors;
 using StrictId;
 
 namespace Api.Types;

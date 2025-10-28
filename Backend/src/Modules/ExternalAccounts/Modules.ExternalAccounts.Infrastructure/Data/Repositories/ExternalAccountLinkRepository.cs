@@ -1,8 +1,8 @@
-﻿using Common.Contracts;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Modules.ExternalAccounts.Domain;
 using Modules.ExternalAccounts.Domain.Aggregates;
 using Modules.ExternalAccounts.Domain.ValueObjects;
+using SharedKernel.Contracts.Data;
 using StrictId;
 
 namespace Modules.ExternalAccounts.Infrastructure.Data.Repositories;

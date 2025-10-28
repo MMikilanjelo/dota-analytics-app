@@ -1,7 +1,8 @@
-﻿using Common;
-using Common.Contracts.Messaging;
+﻿using SharedKernel;
+using SharedKernel.Contracts.Messaging;
 using Modules.Users.Application.UseCases.Contracts.DataLoaders;
 using Modules.Users.Domain.Aggregates.UserAggregate;
+using SharedKernel.Errors;
 using StrictId;
 using User = Modules.Users.Application.Common.Models.User;
 

@@ -1,10 +1,11 @@
-﻿using Common.Contracts;
+﻿using SharedKernel.Abstractions;
+using SharedKernel.Contracts;
 using Modules.ExternalAccounts.Domain.ValueObjects;
 using StrictId;
 
 namespace Modules.ExternalAccounts.Domain.Aggregates;
 
-public class ExternalAccountLinkEntity : AggreggateRoot
+public class ExternalAccountLinkEntity : AggregateRoot
 {
     public required Id<ExternalAccountLinkEntity> Id { get; init; } = Id<ExternalAccountLinkEntity>.Empty;
     public required Id OwnerId { get; init; } = new();

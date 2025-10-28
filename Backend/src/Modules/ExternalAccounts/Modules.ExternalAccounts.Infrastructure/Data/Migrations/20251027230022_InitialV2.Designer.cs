@@ -27,7 +27,7 @@ namespace Modules.ExternalAccounts.Infrastructure.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Common.Outbox.OutboxMessage", b =>
+            modelBuilder.Entity("SharedKernel.Outbox.OutboxMessage", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()

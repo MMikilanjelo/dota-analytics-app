@@ -1,4 +1,4 @@
-﻿using Common.Contracts.Events;
+﻿using SharedKernel.Contracts.Messaging;
 using Modules.Users.Domain.Aggregates.UserAggregate.Events;
 using Modules.Users.IntegrationEvents;
 

@@ -1,4 +1,4 @@
-﻿using Common.Contracts.Events;
+﻿using SharedKernel.Contracts.Messaging;
 
 namespace Modules.Users.IntegrationEvents;
 

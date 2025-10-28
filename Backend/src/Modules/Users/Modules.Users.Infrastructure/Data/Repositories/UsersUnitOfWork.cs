@@ -1,7 +1,8 @@
-﻿using Common.Contracts;
-using Common.Outbox;
-using Modules.Users.Domain;
+﻿using Modules.Users.Domain;
 using Newtonsoft.Json;
+using SharedKernel;
+using SharedKernel.Abstractions;
+using SharedKernel.Contracts.Messaging;
 
 namespace Modules.Users.Infrastructure.Data.Repositories;
 
@@ -17,7 +18,7 @@ public class UsersUnitOfWork(UsersDbContext dbContext) : IUsersUnitOfWork
     private void ConvertDomainEventsToOutboxMessages()
     {
         var messages = dbContext.ChangeTracker
-            .Entries<AggreggateRoot>()
+            .Entries<AggregateRoot>()
             .Select(e => e.Entity)
             .SelectMany(e =>
                 {

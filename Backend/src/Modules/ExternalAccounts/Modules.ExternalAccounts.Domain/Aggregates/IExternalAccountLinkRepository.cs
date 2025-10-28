@@ -1,4 +1,5 @@
-﻿using Common.Contracts;
+﻿using SharedKernel.Contracts;
+using SharedKernel.Contracts.Data;
 using Modules.ExternalAccounts.Domain.ValueObjects;
 using StrictId;
 

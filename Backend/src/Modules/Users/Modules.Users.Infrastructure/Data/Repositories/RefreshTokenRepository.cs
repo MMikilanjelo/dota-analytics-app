@@ -1,10 +1,6 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using Common.Contracts;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.EntityFrameworkCore;
-using Modules.Users.Domain;
+﻿using Modules.Users.Domain;
 using Modules.Users.Domain.Aggregates.RefreshTokenAggregate;
+using SharedKernel.Contracts.Data;
 
 namespace Modules.Users.Infrastructure.Data.Repositories;
 

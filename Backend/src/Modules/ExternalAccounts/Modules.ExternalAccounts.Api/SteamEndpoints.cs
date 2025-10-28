@@ -1,11 +1,11 @@
-﻿using Common.Contracts.Messaging;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Modules.ExternalAccounts.Application.UseCases.Commands;
 using Modules.ExternalAccounts.Application.UseCases.Queries;
 using Modules.ExternalAccounts.Infrastructure.Extensions;
+using SharedKernel.Contracts.Messaging;
 
 namespace Modules.ExternalAccounts.Api;
 

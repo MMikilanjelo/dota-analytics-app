@@ -1,8 +1,8 @@
-﻿using Common.Abstractions;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Modules.ExternalAccounts.Domain.Aggregates;
 using Modules.ExternalAccounts.Domain.ValueObjects;
+using SharedKernel.Abstractions;
 using StrictId;
 using StrictId.EFCore;
 

@@ -1,6 +1,7 @@
-﻿using Common.Outbox;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using SharedKernel;
+using SharedKernel.Contracts.Messaging;
 
 namespace Modules.ExternalAccounts.Infrastructure.Data.Configurations;
 

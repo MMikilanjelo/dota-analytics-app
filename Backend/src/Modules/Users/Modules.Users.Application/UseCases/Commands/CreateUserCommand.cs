@@ -1,12 +1,12 @@
-﻿using Common;
-using Common.Contracts.Events;
-using Common.Contracts.Messaging;
+﻿using SharedKernel;
+using SharedKernel.Contracts.Messaging;
 using FluentValidation;
 using Modules.Users.Application.UseCases.Contracts.DataLoaders;
 using Modules.Users.Application.UseCases.Contracts.Services;
 using Modules.Users.Domain.Aggregates.UserAggregate;
 using Modules.Users.Domain.Aggregates.UserAggregate.Events;
 using Modules.Users.IntegrationEvents;
+using SharedKernel.Errors;
 using User = Modules.Users.Application.Common.Models.User;
 
 namespace Modules.Users.Application.UseCases.Commands;
@@ -38,18 +38,21 @@ internal sealed class CreateUserCommandHandler(
 
         var passwordHash = passwordHasherService.Hash(command.Password);
 
-        var user = UserEntity.Create(command.Email, passwordHash);
+        var createUserResult = UserEntity.Create(command.Email, passwordHash);
 
-        userRepository.AddUser(user, cancellationToken);
+        if (createUserResult.IsFailure)
+        {
+            return Result.Failure<User>(createUserResult.DomainError);
+        }
 
-        await eventBus.Publish(new UserCreatedDomainEvent(user.Id), cancellationToken);
+        userRepository.AddUser(createUserResult.Value, cancellationToken);
 
         await userRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success(new User
         {
-            Id = user.Id.ToString(),
-            Email = user.Email.ToString()
+            Id = createUserResult.Value.Id.ToString(),
+            Email = createUserResult.Value.Email.ToString()
         });
     }
 }

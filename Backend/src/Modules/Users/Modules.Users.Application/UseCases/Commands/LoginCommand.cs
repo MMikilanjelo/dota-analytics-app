@@ -1,13 +1,15 @@
 ﻿using System.Linq.Expressions;
-using Common;
-using Common.Contracts.Messaging;
-using Common.Time;
+using SharedKernel;
+using SharedKernel.Contracts;
+using SharedKernel.Contracts.Messaging;
+using SharedKernel.Contracts.Time;
 using FluentValidation;
 using Modules.Users.Application.Common.Models;
 using Modules.Users.Application.UseCases.Contracts.DataLoaders;
 using Modules.Users.Application.UseCases.Contracts.Services;
 using Modules.Users.Domain.Aggregates.RefreshTokenAggregate;
 using Modules.Users.Domain.Aggregates.UserAggregate;
+using SharedKernel.Errors;
 using StrictId;
 
 namespace Modules.Users.Application.UseCases.Commands;
@@ -55,13 +57,18 @@ internal class CommandHandler(
 
         var accessToken = identityService.GenerateAccessToken(user);
 
-        var refreshToken = RefreshTokenEntity.Create(
+        var createRefreshTokenResult = RefreshTokenEntity.Create(
             user,
             clock.UtcNow,
             identityService.GenerateRefreshToken()
         );
 
-        refreshTokenRepository.AddRefreshToken(refreshToken, cancellationToken);
+        if (createRefreshTokenResult.IsFailure)
+        {
+            return Result.Failure<LoginUserPayload>(createRefreshTokenResult.DomainError);
+        }
+
+        refreshTokenRepository.AddRefreshToken(createRefreshTokenResult.Value, cancellationToken);
 
         var response = new LoginUserPayload(
             new User
@@ -70,7 +77,7 @@ internal class CommandHandler(
                 Email = user.Email.Value,
             },
             accessToken,
-            refreshToken.Token
+            createRefreshTokenResult.Value.Token
         );
 
         await refreshTokenRepository.UnitOfWork.SaveChangesAsync(cancellationToken);

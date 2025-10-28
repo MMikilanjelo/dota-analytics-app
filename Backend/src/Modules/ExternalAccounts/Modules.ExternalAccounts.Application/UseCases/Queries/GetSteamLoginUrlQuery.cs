@@ -1,5 +1,5 @@
-﻿using Common;
-using Common.Contracts.Messaging;
+﻿using SharedKernel;
+using SharedKernel.Contracts.Messaging;
 using FluentValidation;
 using Modules.ExternalAccounts.Application.Common.Contracts.Clients;
 using Modules.ExternalAccounts.Application.Common.Contracts.Services;

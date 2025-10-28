@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using Common.Abstractions;
+using SharedKernel.Abstractions;
 
 namespace Modules.ExternalAccounts.Domain.ValueObjects;
 

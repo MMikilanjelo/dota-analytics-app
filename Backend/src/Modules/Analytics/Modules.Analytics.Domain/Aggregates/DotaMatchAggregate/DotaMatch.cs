@@ -2,7 +2,7 @@
 
 public class DotaMatch
 {
-    public DotaMatchId Id { get; set; }
+    public DotaMatchId Id { get; init; }
     public string RawJson { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
 }

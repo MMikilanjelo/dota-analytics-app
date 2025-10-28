@@ -2,13 +2,12 @@
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using Common.Contracts;
-using Common.Time;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using Modules.Users.Application.UseCases.Contracts.Services;
 using Modules.Users.Domain.Aggregates.UserAggregate;
+using SharedKernel.Contracts.Time;
 
 namespace Modules.Users.Infrastructure.Services;
 

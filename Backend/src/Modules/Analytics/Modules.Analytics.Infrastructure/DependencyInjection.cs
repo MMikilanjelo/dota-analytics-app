@@ -1,4 +1,4 @@
-﻿using Common.Contracts;
+﻿using SharedKernel.Contracts;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
@@ -35,34 +35,34 @@ public static class DependencyInjection
                 PooledConnectionLifetime = TimeSpan.FromMinutes(5),
             });
 
-        services.AddQuartz(q =>
-        {
-            q.AddJob<FetchDotaMatchesJob>(opts =>
-            {
-                opts.WithIdentity(FetchDotaMatchesJob.Key);
-                opts.StoreDurably();
-            });
-            q.AddJob<ParseDotaMatchReplayJob>(opts =>
-            {
-                opts.WithIdentity(ParseDotaMatchReplayJob.Key);
-                opts.StoreDurably();
-            });
-            q.AddJobListener<FetchDotaMatchesJobListener>(
-                KeyMatcher<JobKey>.KeyEquals(FetchDotaMatchesJob.Key)
-            );
-
-            q.AddTrigger(t => t
-                .ForJob(FetchDotaMatchesJob.Key)
-                .WithIdentity(nameof(FetchDotaMatchesJob))
-                .StartNow()
-                .WithSimpleSchedule(x => x
-                    .WithInterval(TimeSpan.FromMinutes(2))
-                    .RepeatForever()));
-        });
-
-        services.AddQuartzHostedService(opt => opt.WaitForJobsToComplete = true);
-
         return services;
+    }
+
+    public static IServiceCollectionQuartzConfigurator AddAnalyticsJobs(this IServiceCollectionQuartzConfigurator q)
+    {
+        q.AddJob<FetchDotaMatchesJob>(opts =>
+        {
+            opts.WithIdentity(FetchDotaMatchesJob.Key);
+            opts.StoreDurably();
+        });
+        q.AddJob<ParseDotaMatchReplayJob>(opts =>
+        {
+            opts.WithIdentity(ParseDotaMatchReplayJob.Key);
+            opts.StoreDurably();
+        });
+        q.AddJobListener<FetchDotaMatchesJobListener>(
+            KeyMatcher<JobKey>.KeyEquals(FetchDotaMatchesJob.Key)
+        );
+
+        q.AddTrigger(t => t
+            .ForJob(FetchDotaMatchesJob.Key)
+            .WithIdentity(nameof(FetchDotaMatchesJob))
+            .StartNow()
+            .WithSimpleSchedule(x => x
+                .WithInterval(TimeSpan.FromMinutes(2))
+                .RepeatForever()));
+
+        return q;
     }
 
     private static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)

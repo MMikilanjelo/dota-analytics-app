@@ -1,5 +1,4 @@
-﻿using Common.Contracts.Events;
-using Common.Contracts.Messaging;
+﻿using SharedKernel.Contracts.Messaging;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Modules.Users.Application.Handlers;

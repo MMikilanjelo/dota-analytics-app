@@ -1,7 +1,8 @@
-﻿using Common.Contracts;
-using Common.Outbox;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Modules.ExternalAccounts.Domain.Aggregates;
+using SharedKernel;
+using SharedKernel.Contracts;
+using SharedKernel.Contracts.Messaging;
 using StrictId.EFCore;
 
 namespace Modules.ExternalAccounts.Infrastructure.Data;

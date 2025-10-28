@@ -1,9 +1,10 @@
 ﻿using System.Text.Json;
 using System.Web;
-using Common;
 using Modules.ExternalAccounts.Application.Common.Contracts.Clients;
 using Modules.ExternalAccounts.Application.Common.Contracts.Services;
 using Modules.ExternalAccounts.Infrastructure.Services.Clients.Steam.Models;
+using SharedKernel;
+using SharedKernel.Errors;
 
 namespace Modules.ExternalAccounts.Infrastructure.Services.Clients.Steam;
 

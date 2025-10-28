@@ -1,20 +1,22 @@
 ﻿using System.Dynamic;
 using System.Text.RegularExpressions;
-using Common.Abstractions;
+using SharedKernel;
+using SharedKernel.Abstractions;
+using SharedKernel.Errors;
 
 namespace Modules.ExternalAccounts.Domain.ValueObjects;
 
 public class SteamId : ExternalAccountId
 {
-    private SteamId(string value) : base(value , ProviderKind.Steam)
+    private SteamId(string value) : base(value, ProviderKind.Steam)
     {
     }
 
-    public static SteamId Create(string value)
+    public static Result<SteamId> Create(string value)
     {
         if (!Regex.IsMatch(value, @"^\d{17}$"))
         {
-            throw new ArgumentException("Invalid Steam ID format");
+            return Result.Failure<SteamId>(new ValidationError([new InvalidValueFormatError()]));
         }
 
         return new SteamId(value);

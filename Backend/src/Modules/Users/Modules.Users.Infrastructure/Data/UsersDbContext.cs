@@ -1,8 +1,9 @@
-﻿using Common.Contracts;
-using Common.Outbox;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Modules.Users.Domain.Aggregates.RefreshTokenAggregate;
 using Modules.Users.Domain.Aggregates.UserAggregate;
+using SharedKernel;
+using SharedKernel.Contracts;
+using SharedKernel.Contracts.Messaging;
 using StrictId.EFCore;
 
 namespace Modules.Users.Infrastructure.Data;

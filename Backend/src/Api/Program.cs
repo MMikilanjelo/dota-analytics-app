@@ -1,5 +1,7 @@
-using Common;
-using Common.Contracts.Events;
+using Application;
+using SharedKernel;
+using SharedKernel.Contracts.Messaging;
+using Infrastructure;
 using Modules.Analytics.Infrastructure;
 using Modules.Analytics.Infrastructure.Extensions;
 using Modules.ExternalAccounts.Api;
@@ -9,6 +11,7 @@ using Modules.ExternalAccounts.Infrastructure.Extensions;
 using Modules.Users.Application;
 using Modules.Users.Infrastructure;
 using Modules.Users.Infrastructure.Extensions;
+using Quartz;
 using Serilog;
 using StrictId.HotChocolate;
 
@@ -55,10 +58,15 @@ builder.Services
     .AddExternalAccountsModuleApplication()
     .AddExternalAccountsModuleInfrastructure(builder.Configuration)
     .AddAnalyticsModuleInfrastructure(builder.Configuration)
-    .DecorateModules();
-
-builder.Services.AddScoped<IEventPublisher, EventPublisher>();
-
+    .AddCommonInfrastructure()
+    .AddBehaviours()
+    .AddQuartz(q =>
+        {
+            q.AddUsersJobs();
+            q.AddAnalyticsJobs();
+        }
+    )
+    .AddQuartzHostedService(opt => { opt.WaitForJobsToComplete = true; });
 
 var app = builder.Build();
 

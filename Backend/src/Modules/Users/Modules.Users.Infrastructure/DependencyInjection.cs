@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using Common.Contracts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
@@ -17,6 +16,7 @@ using Modules.Users.Infrastructure.Jobs;
 using Modules.Users.Infrastructure.Services;
 using Quartz;
 using Quartz.Impl.Matchers;
+using SharedKernel.Contracts;
 using IUserByIdDataLoader = Modules.Users.Application.UseCases.Contracts.DataLoaders.IUserByIdDataLoader;
 using IUserByEmailDataLoader = Modules.Users.Application.UseCases.Contracts.DataLoaders.IUserByEmailDataLoader;
 using IRefreshTokenByTokenDataLoader = Modules.Users.Application.UseCases.Contracts.DataLoaders.IRefreshTokenByTokenDataLoader;
@@ -69,27 +69,30 @@ public static class DependencyInjection
                 };
             });
 
-        services.AddQuartz(q =>
-        {
-            q.AddJob<ProcessUsersOutboxMessagesJob>(opts => { opts.WithIdentity(ProcessUsersOutboxMessagesJob.Key); });
-
-            q.AddTrigger(t => t
-                .ForJob(ProcessUsersOutboxMessagesJob.Key)
-                .WithIdentity(nameof(ProcessUsersOutboxMessagesJob))
-                .StartNow()
-                .WithSimpleSchedule(x => x
-                    .WithInterval(TimeSpan.FromSeconds(3))
-                    .RepeatForever()));
-        });
-
-
         services.AddHttpContextAccessor();
+
         services.AddSingleton<IPasswordHasherService, PasswordHasherService>();
+
         services.AddSingleton<IIdentityService, IdentityService>();
 
         services.AddAuthorization();
 
         return services;
+    }
+
+    public static IServiceCollectionQuartzConfigurator AddUsersJobs(this IServiceCollectionQuartzConfigurator q)
+    {
+        q.AddJob<ProcessUsersOutboxMessagesJob>(opts => { opts.WithIdentity(ProcessUsersOutboxMessagesJob.Key); });
+
+        q.AddTrigger(t => t
+            .ForJob(ProcessUsersOutboxMessagesJob.Key)
+            .WithIdentity(nameof(ProcessUsersOutboxMessagesJob))
+            .StartNow()
+            .WithSimpleSchedule(x => x
+                .WithInterval(TimeSpan.FromSeconds(10))
+                .RepeatForever()));
+
+        return q;
     }
 
     private static IServiceCollection AddDataLoaders(this IServiceCollection services)

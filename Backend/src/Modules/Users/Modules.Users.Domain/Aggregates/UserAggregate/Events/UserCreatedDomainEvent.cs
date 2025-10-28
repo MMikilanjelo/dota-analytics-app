@@ -1,4 +1,5 @@
-﻿using Common.Contracts;
+﻿using SharedKernel.Contracts;
+using SharedKernel.Contracts.Messaging;
 using StrictId;
 
 namespace Modules.Users.Domain.Aggregates.UserAggregate.Events;

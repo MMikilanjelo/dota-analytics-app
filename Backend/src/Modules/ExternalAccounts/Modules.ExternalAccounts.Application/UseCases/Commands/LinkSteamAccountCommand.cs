@@ -1,5 +1,5 @@
-﻿using Common;
-using Common.Contracts.Messaging;
+﻿using SharedKernel;
+using SharedKernel.Contracts.Messaging;
 using FluentValidation;
 using Modules.ExternalAccounts.Application.Common.Contracts.Clients;
 using Modules.ExternalAccounts.Application.Common.Contracts.Services;
@@ -25,13 +25,18 @@ internal sealed class LinkSteamAccountCommandHandler(
             return validationResult;
         }
 
-        var accountId = SteamId.Create(validationResult.Value.SteamId);
+        var createSteamIdResult = SteamId.Create(validationResult.Value.SteamId);
+
+        if (createSteamIdResult.IsFailure)
+        {
+            return Result.Failure(createSteamIdResult.DomainError);
+        }
 
         var userId = new Id(validationResult.Value.UserId);
 
         var existingAccount = await externalAccountLinkRepository.GetExternalAccountLink(
             userId,
-            accountId,
+            createSteamIdResult.Value,
             cancellationToken
         );
 
@@ -40,7 +45,7 @@ internal sealed class LinkSteamAccountCommandHandler(
             var steamLink = ExternalAccountLinkEntity.CreateSteamLink(
                 userId,
                 TimeSpan.FromDays(30),
-                accountId
+                createSteamIdResult.Value
             );
 
             externalAccountLinkRepository.AddExternalAccount(steamLink, cancellationToken);

@@ -1,6 +1,6 @@
-﻿using Common.Contracts;
-using Modules.Users.Domain;
+﻿using Modules.Users.Domain;
 using Modules.Users.Domain.Aggregates.UserAggregate;
+using SharedKernel.Contracts.Data;
 
 namespace Modules.Users.Infrastructure.Data.Repositories;
 

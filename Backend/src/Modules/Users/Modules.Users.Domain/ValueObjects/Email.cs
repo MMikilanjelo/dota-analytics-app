@@ -1,5 +1,7 @@
 ﻿using System.Text.RegularExpressions;
-using Common.Abstractions;
+using SharedKernel;
+using SharedKernel.Abstractions;
+using SharedKernel.Errors;
 
 namespace Modules.Users.Domain.ValueObjects;
 
@@ -12,16 +14,16 @@ public class Email : ValueObject
         RegexOptions.Compiled | RegexOptions.IgnoreCase
     );
 
-    public static Email Create(string value)
+    public static Result<Email> Create(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
-            throw new ArgumentException("Email cannot be empty.", nameof(value));
+            return Result.Failure<Email>(new ValidationError([new NullValueError()]));
         }
 
         if (!EmailRegex.IsMatch(value))
         {
-            throw new ArgumentException("Invalid email format.", nameof(value));
+            return Result.Failure<Email>(new ValidationError([new InvalidValueFormatError()]));
         }
 
         return new Email(value.Trim());

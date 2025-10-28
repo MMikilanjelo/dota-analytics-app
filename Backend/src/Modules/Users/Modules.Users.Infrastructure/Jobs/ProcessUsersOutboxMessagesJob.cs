@@ -1,10 +1,9 @@
-﻿using Common.Contracts;
-using Common.Contracts.Events;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Modules.Users.Infrastructure.Data;
 using Newtonsoft.Json;
 using Quartz;
+using SharedKernel.Contracts.Messaging;
 
 namespace Modules.Users.Infrastructure.Jobs;
 
@@ -22,6 +21,8 @@ public class ProcessUsersOutboxMessagesJob(
     {
         logger.LogInformation("Starting {Job} at {Time}", nameof(ProcessUsersOutboxMessagesJob), DateTime.UtcNow);
 
+        await using var transaction = await usersDbContext.Database.BeginTransactionAsync(context.CancellationToken);
+
         var outboxMessages = await usersDbContext
             .OutboxMessages
             .Where(m => m.ProcessedOnUtc == null)
@@ -37,33 +38,19 @@ public class ProcessUsersOutboxMessagesJob(
             {
                 logger.LogDebug("Processing outbox message {MessageId} of type {MessageType}", message.Id, message.Type);
 
-                var eventType = Type.GetType(message.Type);
-
-                if (eventType is null)
-                {
-                    logger.LogWarning("Unknown event type {EventType}", message.Type);
-                    message.Error = "Unknown event type";
-                    message.ProcessedOnUtc = DateTime.UtcNow;
-                    continue;
-                }
-
-                var domainEvent = (IDomainEvent?)JsonConvert.DeserializeObject(
+                var @event = JsonConvert.DeserializeObject<IEvent>(
                     message.Payload,
-                    eventType,
-                    new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto });
+                    new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.Auto }
+                );
 
-                if (domainEvent is null)
+                if (@event is null)
                 {
-                    logger.LogWarning("Failed to deserialize message {MessageId} of type {MessageType}", message.Id, message.Type);
-
                     message.Error = "Deserialization failed";
-
                     message.ProcessedOnUtc = DateTime.UtcNow;
-
                     continue;
                 }
 
-                await eventPublisher.Publish(domainEvent, context.CancellationToken);
+                await eventPublisher.Publish(@event, context.CancellationToken);
 
                 message.ProcessedOnUtc = DateTime.UtcNow;
 
@@ -71,15 +58,15 @@ public class ProcessUsersOutboxMessagesJob(
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Error processing outbox message {MessageId} ({MessageType})", message.Id, message.Type);
-
                 message.Error = ex.Message;
-
                 message.ProcessedOnUtc = DateTime.UtcNow;
+                logger.LogError(ex, "Error processing outbox message {MessageId} ({MessageType})", message.Id, message.Type);
             }
         }
 
         await usersDbContext.SaveChangesAsync(context.CancellationToken);
+
+        await transaction.CommitAsync(context.CancellationToken);
 
         logger.LogInformation("Completed {Job} at {Time}", nameof(ProcessUsersOutboxMessagesJob), DateTime.UtcNow);
     }

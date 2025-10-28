@@ -1,10 +1,13 @@
-﻿using Common.Contracts;
+﻿using SharedKernel;
+using SharedKernel.Abstractions;
+using SharedKernel.Contracts;
 using Modules.Users.Domain.Aggregates.UserAggregate;
+using SharedKernel.Errors;
 using StrictId;
 
 namespace Modules.Users.Domain.Aggregates.RefreshTokenAggregate;
 
-public class RefreshTokenEntity : AggreggateRoot
+public class RefreshTokenEntity : AggregateRoot
 {
     public required Id<RefreshTokenEntity> Id { get; init; }
     public required Id<UserEntity> UserId { get; init; }
@@ -21,7 +24,7 @@ public class RefreshTokenEntity : AggreggateRoot
         Token = token;
     }
 
-    public static RefreshTokenEntity Create(
+    public static Result<RefreshTokenEntity> Create(
         UserEntity userEntity,
         DateTime now,
         string token
@@ -29,7 +32,7 @@ public class RefreshTokenEntity : AggreggateRoot
     {
         if (string.IsNullOrWhiteSpace(token))
         {
-            throw new ArgumentException("Token cannot be empty.");
+            return Result.Failure<RefreshTokenEntity>(new ValidationError([new NullValueError()]));
         }
 
         return new RefreshTokenEntity

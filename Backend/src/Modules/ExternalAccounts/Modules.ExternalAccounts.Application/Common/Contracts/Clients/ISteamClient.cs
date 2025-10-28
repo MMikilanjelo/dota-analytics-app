@@ -1,4 +1,4 @@
-﻿using Common;
+﻿using SharedKernel;
 
 namespace Modules.ExternalAccounts.Application.Common.Contracts.Clients;
 

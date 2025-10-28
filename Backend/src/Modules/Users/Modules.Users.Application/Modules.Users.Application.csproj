@@ -14,7 +14,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\..\Common\Common\Common.csproj" />
+      <ProjectReference Include="..\..\..\Common\SharedKernel\SharedKernel.csproj" />
       <ProjectReference Include="..\Modules.Users.Domain\Modules.Users.Domain.csproj" />
       <ProjectReference Include="..\Modules.Users.IntegrationEvents\Modules.Users.IntegrationEvents.csproj" />
     </ItemGroup>

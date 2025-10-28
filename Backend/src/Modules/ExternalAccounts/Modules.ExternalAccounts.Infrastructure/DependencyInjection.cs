@@ -1,5 +1,4 @@
-﻿using Common.Contracts;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,6 +12,7 @@ using Modules.ExternalAccounts.Infrastructure.Extensions;
 using Modules.ExternalAccounts.Infrastructure.Services;
 using Modules.ExternalAccounts.Infrastructure.Services.Clients;
 using Modules.ExternalAccounts.Infrastructure.Services.Clients.Steam;
+using SharedKernel.Contracts;
 using StackExchange.Redis;
 
 namespace Modules.ExternalAccounts.Infrastructure;

@@ -1,4 +1,4 @@
-﻿using Common.Contracts;
+﻿using SharedKernel.Contracts;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
