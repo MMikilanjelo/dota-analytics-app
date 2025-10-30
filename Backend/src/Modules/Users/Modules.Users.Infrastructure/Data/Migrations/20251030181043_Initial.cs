@@ -15,6 +15,40 @@ namespace Modules.Users.Infrastructure.Data.Migrations
                 name: "users");
 
             migrationBuilder.CreateTable(
+                name: "InboxMessage",
+                schema: "users",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Type = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
+                    Payload = table.Column<string>(type: "text", nullable: false),
+                    ReceivedOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ProcessedOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Error = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_InboxMessage", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OutboxMessages",
+                schema: "users",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Type = table.Column<string>(type: "character varying(250)", maxLength: 250, nullable: false),
+                    Payload = table.Column<string>(type: "text", nullable: false),
+                    OccuredOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ProcessedOnUtc = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    Error = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OutboxMessages", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 schema: "users",
                 columns: table => new
@@ -51,6 +85,18 @@ namespace Modules.Users.Infrastructure.Data.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_InboxMessage_ProcessedOnUtc",
+                schema: "users",
+                table: "InboxMessage",
+                column: "ProcessedOnUtc");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OutboxMessages_ProcessedOnUtc",
+                schema: "users",
+                table: "OutboxMessages",
+                column: "ProcessedOnUtc");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_RefreshTokens_Token",
                 schema: "users",
                 table: "RefreshTokens",
@@ -67,6 +113,14 @@ namespace Modules.Users.Infrastructure.Data.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "InboxMessage",
+                schema: "users");
+
+            migrationBuilder.DropTable(
+                name: "OutboxMessages",
+                schema: "users");
+
             migrationBuilder.DropTable(
                 name: "RefreshTokens",
                 schema: "users");

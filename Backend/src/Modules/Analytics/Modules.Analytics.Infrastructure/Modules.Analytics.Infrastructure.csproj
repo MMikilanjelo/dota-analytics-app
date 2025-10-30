@@ -15,6 +15,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\..\Common\SharedKernel\SharedKernel.csproj" />
+      <ProjectReference Include="..\..\..\Infrastructure\Infrastructure.csproj" />
       <ProjectReference Include="..\..\Users\Modules.Users.IntegrationEvents\Modules.Users.IntegrationEvents.csproj" />
       <ProjectReference Include="..\Modules.Analytics.Domain\Modules.Analytics.Domain.csproj" />
     </ItemGroup>

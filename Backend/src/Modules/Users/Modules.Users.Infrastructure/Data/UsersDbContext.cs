@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Infrastructure.Data.Configurations;
+using Microsoft.EntityFrameworkCore;
 using Modules.Users.Domain.Aggregates.RefreshTokenAggregate;
 using Modules.Users.Domain.Aggregates.UserAggregate;
 using SharedKernel;
@@ -19,6 +20,10 @@ public class UsersDbContext(DbContextOptions<UsersDbContext> options) : DbContex
         modelBuilder.HasDefaultSchema(Schemas.Users);
 
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(UsersDbContext).Assembly);
+        
+        modelBuilder.ApplyConfiguration(new InboxMessageConfiguration());
+        
+        modelBuilder.ApplyConfiguration(new OutboxMessageConfiguration());
     }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder builder)

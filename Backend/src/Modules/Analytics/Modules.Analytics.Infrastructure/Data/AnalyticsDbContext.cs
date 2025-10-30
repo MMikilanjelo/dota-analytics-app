@@ -1,4 +1,5 @@
-﻿using SharedKernel.Contracts;
+﻿using Infrastructure.Data.Configurations;
+using SharedKernel.Contracts;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +10,10 @@ public class AnalyticsDbContext(DbContextOptions<AnalyticsDbContext> options) : 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.HasDefaultSchema(Schemas.Analytics);
+
+        builder.ApplyConfiguration(new InboxMessageConfiguration());
+        
+        builder.ApplyConfiguration(new OutboxMessageConfiguration());
 
         base.OnModelCreating(builder);
     }

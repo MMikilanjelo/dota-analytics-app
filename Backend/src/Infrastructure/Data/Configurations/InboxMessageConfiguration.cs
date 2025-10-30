@@ -1,13 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SharedKernel;
-using SharedKernel.Contracts.Messaging;
 
-namespace Modules.ExternalAccounts.Infrastructure.Data.Configurations;
+namespace Infrastructure.Data.Configurations;
 
-public class OutboxMessageConfiguration : IEntityTypeConfiguration<OutboxMessage>
+public class InboxMessageConfiguration : IEntityTypeConfiguration<InboxMessage>
 {
-    public void Configure(EntityTypeBuilder<OutboxMessage> builder)
+    public void Configure(EntityTypeBuilder<InboxMessage> builder)
     {
         builder.HasKey(x => x.Id);
 
@@ -19,7 +18,8 @@ public class OutboxMessageConfiguration : IEntityTypeConfiguration<OutboxMessage
         builder.Property(x => x.Payload)
             .IsRequired();
 
-        builder.Property(x => x.OccuredOnUtc)
+        builder
+            .Property(x => x.ReceivedOnUtc)
             .IsRequired();
 
         builder.Property(x => x.ProcessedOnUtc);
